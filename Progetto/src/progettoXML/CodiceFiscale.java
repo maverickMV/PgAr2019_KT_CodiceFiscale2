@@ -16,6 +16,14 @@ public class CodiceFiscale
 	private String lNascita;	// luogo Nascita
 	private char cControllo;	// carattere di controllo
 	
+	/**
+	 * Classe adibita alla creazione del codice fiscale in base ai dati personali di una persona
+	 * @param _nome nome della persona
+	 * @param _cognome cognome della persona
+	 * @param _dNascita data di nascita della persona
+	 * @param _sesso sesso della persona
+	 * @param _lNascita luogo di nascita della persona
+	 */
 	
 	public CodiceFiscale(String _nome, String _cognome, String _dNascita, char _sesso, String _lNascita)
 	{
@@ -29,8 +37,15 @@ public class CodiceFiscale
 		codiceFiscale += cControllo;
 	}
 	
+	/**
+	 * Classe adibita alla determinazione e creazione del carattere di controllo del codice fiscale
+	 * @param codice rappresenta il codice fiscale della persona 
+	 * @return ritorna il carattere di controllo 
+	 */
 	public char setcControllo (String codice)		// per generare il carattere di controllo					errore nei calcoli esce la lettera sbagliata
 	{
+		
+		
 		int somma = 0;
 		int[] valoriDispari = new int[] {1,0,5,7,9,13,15,17,19,21,2,4,18,20,11,3,6,8,12,14,16,10,22,25,24,23};
 		int pos;
@@ -69,6 +84,13 @@ public class CodiceFiscale
 		
 	}	// chiusura metodo CARATTERE DI CONTROLLO
 	
+	
+	
+	/**
+	 * Classe adibita alla determinazione del codice associato al comune di provenienza 
+	 * @param parola variabile utilizzata per la ricerca nel file comuni.xml
+	 * @return ritorna il luogo di nascita della persona
+	 */
 	private String setlNascita (String parola)	// per la ricerca nel documento comuni.xml
 	{
 		XMLInputFactory xmlif = null;
@@ -116,6 +138,14 @@ public class CodiceFiscale
 		
 		return luogo;		// ritorna il codice associato al comune inserito
 	}
+	
+	
+	/**
+	 * metodo per la creazione della data di nascita nel codice fiscale
+	 * @param parola data di nascita persona
+	 * @return ritorna il codice per la data di nascita
+	 */
+	
 	private String setdNascita (String parola)
 	{
 		char tmp;
@@ -131,6 +161,12 @@ public class CodiceFiscale
 		}
 	}
 	
+	/**
+	 * metodo per la creazione del codice mese di nascita nel codice fiscale
+	 * @param parola mese nascita persona
+	 * @return codice mese
+	 */
+	
 	private char setMese (String parola)
 	{
 		if (parola.charAt(0) == '0' && (parola.charAt(1) >= '1' && parola.charAt(1) <= '5'))
@@ -144,6 +180,12 @@ public class CodiceFiscale
 		else
 			return ((char)(parola.charAt(1)+34));
 	}
+	
+	/**
+	 * metodo per la creazione del codice nome nel codice fiscale
+	 * @param parola nome della persona
+	 * @return codice nome
+	 */
 	
 	private String setNome (String parola)
 	{
@@ -167,6 +209,12 @@ public class CodiceFiscale
 		
 	}
 	
+	/**
+	 * metodo per la creazione del codice cognome nel codice fiscale
+	 * @param parola cognome della persona
+	 * @return ritorna il codice cognome 
+	 */
+	
 	private String setCognome (String parola)
 	{
 		if (parola.length() == 1)
@@ -186,6 +234,12 @@ public class CodiceFiscale
 		}
 	}
 	
+	/**
+	 * Metodo utilizzato per trovare le consonanti nella parola
+	 * @param parola parametro in cui trovare le consonanti
+	 * @return ritorna le consonanti presenti nella parola
+	 */
+	
 	public String getConsonanti(String parola)
 	{
 		char tmp;
@@ -204,6 +258,12 @@ public class CodiceFiscale
 		} // fine FOR 
 		return consonanti;
 	}
+	
+	/**
+	 * Metodo utilizzato per trovare le vocali nella parola  
+	 * @param parola parametro in cui trovare le vocali
+	 * @return ritorna le vocali presenti nella parola
+	 */
 	public String getVocali(String parola)
 	{
 		char tmp;

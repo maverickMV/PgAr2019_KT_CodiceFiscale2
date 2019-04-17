@@ -17,10 +17,17 @@ public class Archivio
 	ArrayList <String> codFiscUnmatch = new ArrayList<String>();		// arrattyList per i codiciFiscali che non hanno un riscontro nel file "codiciFiscali.xml"
 	ArrayList <String> codFiscInvalidi = new ArrayList<String>();
 	
+	/**
+	 * Classe adibita alla lettura e scrittura dei file xml
+	 */
 	public Archivio ()
 	{
+		
 		XMLInputFactory xmlif = null;
 		XMLStreamReader xmlr = null;
+		
+		
+		//Il programma prova ad aprire il file
 		try 
 		{
 			xmlif = XMLInputFactory.newInstance();
@@ -30,6 +37,8 @@ public class Archivio
 		{
 			System.out.println("Errore file non trovato");			// messaggio di errore se non riesce a caricare il file
 		}
+		
+		
 		try
 		{
 			while (xmlr.hasNext())
@@ -71,11 +80,21 @@ public class Archivio
 		
 	} // chiusura Costruttore 
 	
+	
+	
+	
+	/**
+	 * Metodo per caricare i codici fiscali nell arratList dopo averne verificato la validit‡
+	 */
+	
+	
 	public void setCodiciFiscali ()		// per riempire il secondo arrayList
 	{
+		
 		XMLInputFactory xmlif = null;
 		XMLStreamReader xmlr = null;
 		
+		//Il programma prova ad aprire il file codicifiscali.xml
 		try 
 		{
 			xmlif = XMLInputFactory.newInstance();
@@ -85,6 +104,8 @@ public class Archivio
 		{
 			System.out.println("Errore file con i codici fiscali non trovato");			// messaggio di errore se non riesce a caricare il file
 		}
+		
+		
 		try
 		{
 			while (xmlr.hasNext())			// ciclo per acquisire tutti i dati del file
@@ -97,7 +118,7 @@ public class Archivio
 						
 							
 						
-						if (testCodiceFiscale(xmlr.getText()))		// se il codice fiscale √® valido lo carica sull'arrayList
+						if (testCodiceFiscale(xmlr.getText()))		// se il codice fiscale Ë valido lo carica sull'arrayList
 							codiciFiscali.add(xmlr.getText());
 						else
 							codFiscInvalidi.add(xmlr.getText());
@@ -110,7 +131,17 @@ public class Archivio
 		{
 			System.out.println("Errore scansione codici fiscali");
 		}
+		
+		
+		
 	}
+	
+	
+	/**
+	 * Metodo per la verifica della validit‡ del codice fiscale
+	 * @param codice inserisce il codice fiscale
+	 * @return ritorna vero se il codice Ë valido altrimenti falso
+	 */
 	
 	public boolean testCodiceFiscale (String codice)		// metodo per la verifica dell'adeguatezza del codice fiscale
 	{
@@ -125,28 +156,35 @@ public class Archivio
 		String vocControllo;
 		
 		//CONTROLLO LUNGHEZZA CODICE
-		if (codice.length() != 16)
-			return false;
+		if (codice.length() != 16) return false;
+		
 		//CONTROLLO POSIZIONE NUMERI
 		for (int i : posizioniNum)	//verifico che ci siano i numeri alle posizioni giuste
 		{
 			cond = cond && (codice.charAt(i) >= '0' && codice.charAt(i) <= '9');
 		}
-		if (!cond)		// condizione che ci siano i numeri alle posizioni giuste
-			return false;
+		
+		
+		if (!cond) return false; // condizione che ci siano i numeri alle posizioni giuste
+		
+		
 		// CONTROLLO POSIZIONE LETTERE
 		for (int i : posizioniLett)	//verifico che ci siano le lettere alle posizioni giuste
 		{
 			cond = cond && (codice.charAt(i) >= 'A' && codice.charAt(i) <= 'Z');
 		}
-		if (!cond)		// condizione che ci siano le lettere alle posizioni giuste
-			return false;
+		
+		if (!cond)		 return false;            // condizione che ci siano le lettere alle posizioni giuste
+			
 		
 		//CONTROLLO MESE
 		cond = false;		// settaggio necessario per far funzionare il successivo costrutto for con '||'
+		
+		
 		for (int i = 0; i <valoreMese.length; i++)		// ciclo che verifica che la lettera per il mese usato sia valida
 		{
 			cond = cond || (valoreMese[i] == codice.charAt(8));
+			
 			if (cond)		// controlla che il numero di giorni sia giusto
 			{
 				int giorno = ((int)(codice.charAt(9))-48)*10;
@@ -156,37 +194,44 @@ public class Archivio
 				{					// aumentata di 40
 					
 				}
-				else
-					giorno += 40;
-				if (giorno > numeroGiorniMese[i])
-					return false;
+				else giorno += 40;
+					
+				if (giorno > numeroGiorniMese[i]) return false;
+					
 			}
 		}
-		if (!cond)		// test per il carattere mese
-			return false;
+		if (!cond) return false;		// test per il carattere mese
+			
 		
 		// CONTROLLO CARATTERE DI CONTROLLO
 		// viene utlizzato un elemento qualsiasi dell'arrayList persone perch√® serve solo il metodo contenuto dentro di esso
 		cond = persone.get(0).getCodiceFiscale().setcControllo(codice.substring(0, 15)) == codice.charAt(15); // test per vedere se il carattere di controllo √® giusto
-		if (!cond)		// controllo condizione precedente
-			return false;
+		if (!cond) return false;		// controllo condizione precedente
+			
 		
 		// CONTROLLO COGNOME
 		controllo = codice.substring(0, 3);		
 		consControllo = persone.get(0).getCodiceFiscale().getConsonanti(controllo);
 		vocControllo = persone.get(0).getCodiceFiscale().getVocali(controllo);
-		if (!controllo.equals(consControllo+vocControllo))		// se le vocali nonsono state messe dopo le consonanti ritorna FALSE
-			return false;
+		if (!controllo.equals(consControllo+vocControllo)) return false;		// se le vocali non sono state messe dopo le consonanti ritorna FALSE
+			
 		//CONTROLLO NOME
 		controllo = codice.substring(3, 6);
 		consControllo = persone.get(0).getCodiceFiscale().getConsonanti(controllo);
 		vocControllo = persone.get(0).getCodiceFiscale().getVocali(controllo);
-		if (!controllo.equals(consControllo+vocControllo))		// se le vocali nonsono state messe dopo le consonanti ritorna FALSE
-			return false;
+		if (!controllo.equals(consControllo+vocControllo)) return false;		// se le vocali nonsono state messe dopo le consonanti ritorna FALSE
+			
 		
 		return true;		// nel caso tutti i test hanno un riscontro positivo ritorna il valore TRUE
 		
 	}
+	
+	
+	/**
+	 * Metodo per confrontare i codici fiscali presenti nel file xml
+	 */
+	
+	
 	public void confrontoCodiciFiscali()	// per terminare la fase 3 e ottenere l'elenco dei CodiciFiscali presenti
 	{
 		boolean cond = false;
@@ -205,6 +250,14 @@ public class Archivio
 			}
 		}
 	}
+	
+	
+	
+	
+	/**
+	 * Metodo per creare il file di output xml
+	 */
+	
 	
 	public void creaOutputFile ()	// metodo per creare l'output per la fase 4 dell'esercizio			da inserire poi nel COSTRUTTORE
 	{
@@ -307,8 +360,4 @@ public class Archivio
 	}
 }
 
-/*
- * spaiati sono i codici fiscali generati che non combaciano o quelli del file in input che non combnaciano?
- * 
- * sostituire l'oggetto arrayList con Set per codici fiscali
- */
+
